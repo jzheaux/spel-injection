@@ -26,4 +26,6 @@ There are unit tests that demonstrate exploits against these endpoints.
 
 Also, the application can be hit directly:
 
-`curl http://localhost:8080/widget/unsafe-search?term=Widget\&filter=price%20lt%2020`
+```
+curl http://localhost:8080/widget/unsafe-search?term=Widget\&filter=price%20lt%2020`
+```
