@@ -106,6 +106,29 @@ public class WidgetController {
 		// alternatively, encoding could be an option for more complex needs
 	}
 
+	@GetMapping("/impermeable-search")
+	public Set<Widget> impermeableFindWidgetsAdvancedly(@RequestParam("term") String term,
+														@RequestParam(value = "min-price", defaultValue = "0.0") Double minPrice,
+														@RequestParam(value = "max-price", defaultValue = "100000.0") Double maxPrice) {
+
+		Set<Widget> widgets = this.repo.findByNameContaining(term);
+
+		SimpleEvaluationContext context =
+				new SimpleEvaluationContext.Builder(DataBindingPropertyAccessor.forReadOnlyAccess())
+						.withRootObject(widgets)
+						.build();
+
+		// strongly-typed variables provide implicit security
+
+		context.setVariable("minPrice", minPrice);
+		context.setVariable("maxPrice", maxPrice);
+
+		// would you really ever allow a client to send you a portion of a SQL query?
+
+		Expression expression = this.parser.parseExpression("#this.?[enabled and (price gt #minPrice and price lt #maxPrice)]");
+		return new LinkedHashSet<>((Collection<Widget>) expression.getValue(context));
+	}
+
 	@ExceptionHandler({ SpelEvaluationException.class, IllegalArgumentException.class })
 	public ResponseEntity<?> badRequest() {
 		return ResponseEntity.badRequest().build();

@@ -142,4 +142,24 @@ public class SpelInjectionApplicationTests {
 						.param("filter", "price gt 0 and T(Runtime).getRuntime().exec(\"pwd\").waitFor() == 0")
 		).andExpect(status().isBadRequest());
 	}
+
+	@Test
+	public void performWhenImpermeableSearchUsesRuntimeThenBadRequest() throws Exception {
+		this.mvc.perform(
+				get("/widget/impermeable-search")
+						.param("term", "Widget")
+						.param("min-price", "price gt 0 and T(Runtime).getRuntime().exec(\"pwd\").waitFor() == 0")
+						.param("max-price", "price gt 0 and T(Runtime).getRuntime().exec(\"pwd\").waitFor() == 0")
+		).andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void performWhenImpermeableSearchUsesJustPriceThenOk() throws Exception {
+		this.mvc.perform(
+				get("/widget/impermeable-search")
+						.param("term", "Widget")
+						.param("min-price", "5")
+						.param("max-price", "20")
+		).andExpect(status().isOk());
+	}
 }

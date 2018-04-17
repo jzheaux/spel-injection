@@ -19,6 +19,9 @@ attacks are still possible.
 */widget/safest-search* - This endpoint uses `SimpleEvaluationContext` as well as introduces a
 whitelist guard against malicious user input.
 
+*/widget/impermeable-search* - This endpoint uses 'SimpleEvaluationContext', does not allow any
+string concatenation of the query and coerces parameters to strong data types.
+
 Testing
 ----
 
